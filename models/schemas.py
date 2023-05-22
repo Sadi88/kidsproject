@@ -8,8 +8,12 @@ class BaseSchema(BaseModel):
     
 class subCategorySchema(BaseSchema):
     category_id: int
+    
+
+class productSchema(subCategorySchema):
     description_tm: str
     description_ru: str
+    subcategory_id: int
     
 class loginSchema(BaseModel):
     password: str

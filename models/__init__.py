@@ -1,2 +1,2 @@
-from models.models import Category, subCategory, Users
-from models.schemas import BaseSchema, subCategorySchema, registerSchema, loginSchema
+from models.models import Category, subCategory, Product, Users
+from models.schemas import BaseSchema, subCategorySchema, productSchema, registerSchema, loginSchema

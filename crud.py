@@ -1,7 +1,7 @@
 from sqlalchemy.orm import Session
 from sqlalchemy.orm import joinedload
 from sqlalchemy import or_, and_
-from models import Category, subCategory, Users
+from models import Category, subCategory, Product, Users
 
 
 def create_crud(req, model, db: Session):
@@ -21,8 +21,6 @@ def read_subcategory(category_id, db: Session):
     result = db.query(
         subCategory.name_tm, 
         subCategory.name_ru, 
-        subCategory.description_tm, 
-        subCategory.description_ru, 
         Category.name_tm.label('categoryNameTM'),
         Category.name_ru.label('categoryNameRU'),
         
@@ -34,7 +32,23 @@ def read_subcategory(category_id, db: Session):
     result = result.all()
     return result
 
-
+def read_product(category_id, subcategory_id, db: Session):
+    result = db.query(
+        Product,
+        Category.name_tm.label('categoryNameTm'),
+        Category.name_ru.label('categoryNameRu'),
+        subCategory.name_tm.label('subCategoryNameTm'),
+        subCategory.name_ru.label('subCategoryNameRu'),
+    ).options(joinedload(Product.image).load_only('img'))\
+    .join(Category, Category.id == Product.category_id)\
+    .join(subCategory, subCategory.id == Product.subcategory_id)
+    
+    if category_id:
+        result = result.filter(Product.category_id == category_id)
+    if subcategory_id:
+        result = result.filter(Product.subcategory_id == subcategory_id)
+    result = result.all()
+    return result
 
 def signUp(req, db: Session):
     user = db.query(Users).filter(

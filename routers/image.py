@@ -1,20 +1,17 @@
-from fastapi import APIRouter, Depends,status
+from fastapi import APIRouter, Depends, status, UploadFile, File
 from fastapi.responses import JSONResponse
 from fastapi.exceptions import HTTPException
 from fastapi.encoders import jsonable_encoder
 from sqlalchemy.orm import Session
 from db import get_db
 import crud
-from models import subCategory, subCategorySchema
 
+image_router = APIRouter()
 
-subcategory_router = APIRouter()
-
-
-@subcategory_router.post('/add-subcategory')
-def add_product(req: subCategorySchema, db: Session = Depends(get_db)):
+@image_router.post('/upload-image')
+def uplaod_image(id: int, db: Session = Depends(get_db), file: UploadFile = File(...)):
     try:
-        result = crud.create_crud(req, subCategory, db)
+        result = crud.create_img(id, file, db)
         result = jsonable_encoder(result)
         return JSONResponse(status_code=status.HTTP_201_CREATED, content=result)
     except Exception as e:
